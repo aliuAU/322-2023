@@ -1,0 +1,69 @@
+package LearnIt
+public
+	system LearnIt_System
+	public 
+    subcomponents
+      UserInterface: Thread;
+      CourseManagement: Thread;
+      UserManagement: Thread;
+      Database: Thread;
+      PaymentGateway: Thread;
+      ContentDelivery: Thread;
+    end LearnIt_System;
+	
+  thread UserInterface
+    port UI_Input: in event data port;
+    port UI_Output: out event data port;
+  end UserInterface;
+
+  thread CourseManagement
+    port CM_Input: in event data port;
+    port CM_Output: out event data port;
+  end CourseManagement;
+
+  thread UserManagement
+    port UM_Input: in event data port;
+    port UM_Output: out event data port;
+  end UserManagement;
+
+  thread Database
+    port DB_Input: in event data port;
+    port DB_Output: out event data port;
+  end Database;
+
+  thread PaymentGateway
+    port PG_Input: in event data port;
+    port PG_Output: out event data port;
+  end PaymentGateway;
+
+  thread ContentDelivery
+    port CD_Input: in event data port;
+    port CD_Output: out event data port;
+  end ContentDelivery;
+
+  process Main
+    properties
+      Dispatch_Protocol => periodic;
+      Period => 100ms;
+    end Main;
+
+    subcomponents
+      UI: UserInterface;
+      CM: CourseManagement;
+      UM: UserManagement;
+      DB: Database;
+      PG: PaymentGateway;
+      CD: ContentDelivery;
+    end Main;
+  
+    connections
+      UIToCM: port CM.CM_Input -> port UI.UI_Output;
+      UIToUM: port UM.UM_Input -> port UI.UI_Output;
+      CMToDB: port DB.DB_Input -> port CM.CM_Output;
+      CMToPG: port PG.PG_Input -> port CM.CM_Output;
+      CMToCD: port CD.CD_Input -> port CM.CM_Output;
+      UMToDB: port DB.DB_Input -> port UM.UM_Output;
+      UMToPG: port PG.PG_Input -> port UM.UM_Output;
+      UMToCD: port CD.CD_Input -> port UM.UM_Output;
+    end Main;
+  end LearnIt_System;
